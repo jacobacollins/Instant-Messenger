@@ -16,6 +16,8 @@ public class InstantMessageFrame extends JFrame {
 		this.add(getFriendsPane(), BorderLayout.CENTER);
 
 		IMHandler imh = new IMHandler(message, friends);
+		DisplayMessageDialog dmd = new DisplayMessageDialog();
+		friends.addMouseListener(dmd);
 		message.addActionListener(imh);
 		send.addActionListener(imh);
 
