@@ -1,5 +1,6 @@
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.JDialog;
 import javax.swing.JList;
@@ -12,6 +13,12 @@ import javax.swing.JList;
  * @version 1.0
  */
 public class DisplayMessageDialog extends MouseAdapter {
+
+	private String sender;
+
+	public DisplayMessageDialog(String s) {
+		sender = s;
+	}
 
 	/**
 	 * Handles a double click event on a friend in the list and displays a
@@ -29,9 +36,15 @@ public class DisplayMessageDialog extends MouseAdapter {
 		if (counter == 2) {
 			JList item = (JList) e.getSource();
 			String friend = (String) item.getSelectedValue();
-			System.out.println("Friend = " + friend);
-			JDialog im = new InstantMessageDialog(null, friend);
-			im.show();
+			System.out.println("Clicked on " + friend);
+		
+			try {
+				JDialog im = new InstantMessageDialog(null, friend, sender);
+				im.show();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 		}
 
