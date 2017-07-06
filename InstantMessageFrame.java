@@ -22,10 +22,10 @@ public class InstantMessageFrame extends JFrame {
 	 * @param s
 	 *            String that represents title of frame.
 	 */
-	public InstantMessageFrame(String s) {
+	public InstantMessageFrame(String title, String sender) {
 
 		// sets title and default close operation
-		super(s);
+		super(title);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		// adds our message panel
@@ -34,10 +34,10 @@ public class InstantMessageFrame extends JFrame {
 
 		// instantiating the dialog window for messages
 		IMHandler imh = new IMHandler(message, friends);
-		DisplayMessageDialog dmd = new DisplayMessageDialog();
+		//DisplayMessageDialog dmd = new DisplayMessageDialog();
 
 		// adding listeners
-		friends.addMouseListener(dmd);
+		friends.addMouseListener(new DisplayMessageDialog(sender));
 		message.addActionListener(imh);
 		send.addActionListener(imh);
 
@@ -93,7 +93,7 @@ public class InstantMessageFrame extends JFrame {
 	 */
 	public static void main(String[] args) {
 
-		JFrame i = new InstantMessageFrame("My IM Program");
+		JFrame i = new InstantMessageFrame("My IM Program", args[0]);
 		i.setSize(450, 220);
 
 		i.setVisible(true);

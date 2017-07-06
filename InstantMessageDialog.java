@@ -1,6 +1,17 @@
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Frame;
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 /**
  * This class displays a message dialog window given that a friend is double
@@ -21,8 +32,9 @@ public class InstantMessageDialog extends JDialog {
 	 *            The owner of the Frame
 	 * @param recipient
 	 *            The recipient of the message
+	 * @throws IOException 
 	 */
-	public InstantMessageDialog(Frame owner, String recipient) {
+	public InstantMessageDialog(Frame owner, String recipient, String sender) throws IOException {
 		super(owner, "SendMessage Dialog", true);
 
 		Container contentPane = this.getContentPane();
@@ -32,10 +44,7 @@ public class InstantMessageDialog extends JDialog {
 		cancel = new JButton("Cancel");
 		message = new JTextArea();
 
-		// action listener
-		SendMessage sm = new SendMessage(message, recipient, this);
-		send.addActionListener(sm);
-		cancel.addActionListener(sm);
+		
 
 		// adding things to the south panel
 		JPanel south = new JPanel();
@@ -52,5 +61,28 @@ public class InstantMessageDialog extends JDialog {
 		contentPane.add(north, BorderLayout.NORTH);
 
 		this.setSize(400, 200);
+		
+
+		PipedInputStream in = new PipedInputStream();
+		PipedOutputStream out = new PipedOutputStream(in);
+
+		SendMessage listener = new SendMessage(message, recipient, sender, this, out);
+		send.addActionListener(listener);
+		cancel.addActionListener(listener);
+
+		Participant user = new Participant(recipient, in);
+		user.start();
+	}
+
+	public static void main(String [] args)
+	{
+		try
+		{
+			InstantMessageDialog d = new InstantMessageDialog(null, args[0], args[1]);
+			d.show();
+		}catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
