@@ -5,6 +5,7 @@ import java.awt.Frame;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,7 +19,7 @@ import javax.swing.JTextArea;
  * clicked from the list.
  * 
  * @author Jacob Collins
- * @version 1.1
+ * @version 1.3  
  */
 public class InstantMessageDialog extends JDialog {
 	private JButton send, cancel;
@@ -63,14 +64,16 @@ public class InstantMessageDialog extends JDialog {
 		this.setSize(400, 200);
 		
 
-		PipedInputStream in = new PipedInputStream();
-		PipedOutputStream out = new PipedOutputStream(in);
+		//PipedInputStream in = new PipedInputStream();
+		//PipedOutputStream out = new PipedOutputStream(in);
 
-		SendMessage listener = new SendMessage(message, recipient, sender, this, out);
+		Socket socket = new Socket("localhost", 5555);
+   
+		SendMessage listener = new SendMessage(message, recipient, sender, this, socket.getOutputStream());
 		send.addActionListener(listener);
 		cancel.addActionListener(listener);
 
-		Participant user = new Participant(recipient, in);
+		Participant user = new Participant(recipient, socket.getInputStream());
 		user.start();
 	}
 
